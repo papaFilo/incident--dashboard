@@ -1,1 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Dashboard - Gemah#4 Pad</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Semua style CSS dari sebelumnya */
+        /* (Gunakan style dari kode sebelumnya) */
+        
+        /* Short version - minimum styles */
+        :root {
+            --primary: #1a365d;
+            --secondary: #3182ce;
+            --danger: #e53e3e;
+            --success: #38a169;
+            --dark: #2d3748;
+            --light: #f7fafc;
+            --border: #e2e8f0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background-color: #f0f2f5; color: var(--dark); line-height: 1.6; }
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #2a4a7f 100%);
+            color: white; padding: 20px; text-align: center;
+            border-bottom: 4px solid var(--secondary);
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        header h1 { font-size: 1.8rem; letter-spacing: 1px; }
+        header p { font-size: 0.9rem; color: #a0aec0; margin-top: 5px; }
+        .status-badge {
+            display: inline-block; background: var(--danger); color: white;
+            padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;
+            font-weight: bold; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
+        .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+        .card {
+            background: white; border-radius: 10px; padding: 20px;
+            margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+        h2 {
+            color: var(--primary); border-left: 4px solid var(--secondary);
+            padding-left: 10px; margin-bottom: 15px; font-size: 1.3rem;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .meta-table { width: 100%; border-collapse: collapse; }
+        .meta-table td { padding: 10px; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+        .meta-table td:first-child { font-weight: bold; color: #4a5568; width: 40%; }
+        .timeline { display: flex; flex-direction: column; gap: 8px; margin: 15px 0; position: relative; }
+        .timeline::before {
+            content: ''; position: absolute; left: 15px; top: 0; bottom: 0;
+            width: 2px; background: var(--border);
+        }
+        .step {
+            background: var(--light); padding: 12px 15px 12px 40px;
+            border-radius: 6px; border-left: 4px solid var(--danger);
+            position: relative; transition: background 0.2s;
+        }
+        .step:hover { background: #edf2f7; }
+        .step::before {
+            content: ''; position: absolute; left: 10px; top: 50%;
+            transform: translateY(-50%); width: 12px; height: 12px;
+            border-radius: 50%; background: var(--danger);
+            border: 2px solid white; box-shadow: 0 0 0 2px var(--danger);
+        }
+        .step:last-child::before { background: var(--warning); box-shadow: 0 0 0 2px var(--warning); }
+        .step-title { font-weight: bold; color: var(--primary); }
+        .step-desc { font-size: 0.9rem; color: #4a5568; }
+        .badge-danger {
+            background-color: #fed7d7; color: #9b2c2c;
+            padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;
+            font-weight: bold; margin-left: 8px;
+        }
+        .triangle-container {
+            display: flex; justify-content: center; align-items: center;
+            padding: 30px 20px; background: linear-gradient(135deg, #fffaf0 0%, #feebc8 100%);
+            border-radius: 8px; border: 1px solid #fbd38d;
+            position: relative; min-height: 250px;
+        }
+        .fire-triangle {
+            width: 0; height: 0;
+            border-left: 120px solid transparent;
+            border-right: 120px solid transparent;
+            border-bottom: 208px solid rgba(245, 158, 11, 0.1);
+            position: relative; margin: 20px 0;
+        }
+        .fire-triangle::after {
+            content: '🔥'; position: absolute; top: -20px;
+            left: 50%; transform: translateX(-50%); font-size: 2rem;
+        }
+        .element {
+            position: absolute; font-size: 0.85rem; font-weight: bold;
+            text-align: center; background: white; padding: 8px 12px;
+            border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 2px solid var(--border); min-width: 120px;
+            transition: transform 0.3s;
+        }
+        .element:hover { transform: scale(1.05); }
+        .element i { display: block; font-size: 1.5rem; margin-bottom: 4px; }
+        #fuel { top: 50px; left: -160px; border-color: #dd6b20; background: #fffaf0; }
+        #heat { top: 50px; right: -160px; border-color: var(--danger); background: #fff5f5; }
+        #oxygen {
+            bottom: -180px; left: 50%; transform: translateX(-50%);
+            border-color: #319795; background: #f0fff4;
+        }
+        #oxygen:hover { transform: translateX(-50%) scale(1.05); }
+        .element small { display: block; font-weight: normal; font-size: 0.75rem; color: #718096; margin-top: 2px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .stat-item { text-align: center; padding: 10px; background: var(--light); border-radius: 6px; }
+        .stat-number { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+        .stat-label { font-size: 0.75rem; color: #718096; }
+        
+        /* Comment Styles */
+        .comment-form textarea {
+            width: 100%; padding: 12px; border: 2px solid var(--border);
+            border-radius: 8px; resize: vertical; min-height: 100px;
+            margin-bottom: 10px; font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .comment-form textarea:focus,
+        .comment-form input:focus {
+            outline: none; border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        }
+        .comment-form input {
+            width: 100%; padding: 10px 12px; border: 2px solid var(--border);
+            border-radius: 8px; margin-bottom: 10px; font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .comment-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (max-width: 500px) { .comment-form .form-row { grid-template-columns: 1fr; } }
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white; border: none; padding: 12px 20px; border-radius: 8px;
+            cursor: pointer; font-weight: bold; transition: opacity 0.2s, transform 0.2s;
+            width: 100%; font-size: 1rem;
+        }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .comment-list { margin-top: 20px; max-height: 500px; overflow-y: auto; }
+        .comment-list::-webkit-scrollbar { width: 6px; }
+        .comment-list::-webkit-scrollbar-track { background: var(--light); border-radius: 3px; }
+        .comment-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .comment-item {
+            background: var(--light); padding: 12px 15px; border-radius: 8px;
+            margin-bottom: 10px; border: 1px solid var(--border);
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .comment-item .comment-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 8px; flex-wrap: wrap; gap: 5px;
+        }
+        .comment-item .comment-user {
+            font-weight: bold; color: var(--primary);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .comment-item .comment-user .avatar {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white; display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: bold;
+        }
+        .comment-item .comment-time { font-size: 0.75rem; color: #718096; }
+        .comment-item .comment-text {
+            font-size: 0.95rem; color: #2d3748; line-height: 1.6;
+            white-space: pre-wrap; word-wrap: break-word;
+        }
+        .comment-loading { text-align: center; padding: 20px; color: #718096; }
+        .comment-loading i { animation: spin 1s linear infinite; font-size: 1.5rem; display: block; margin-bottom: 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .comment-error {
+            background: #fed7d7; color: #9b2c2c; padding: 12px 15px;
+            border-radius: 6px; margin: 10px 0; text-align: center;
+        }
+        .comment-success {
+            background: #c6f6d5; color: #22543d; padding: 12px 15px;
+            border-radius: 6px; margin: 10px 0; text-align: center;
+        }
+        .empty-state { color: #a0aec0; font-size: 0.95rem; text-align: center; padding: 30px 20px; }
+        .empty-state i { font-size: 2rem; display: block; margin-bottom: 10px; }
+        .char-counter { text-align: right; font-size: 0.8rem; color: #718096; margin-top: -8px; margin-bottom: 10px; }
+        .char-counter.limit { color: var(--danger); }
+        .comment-info {
+            background: #ebf8ff; padding: 12px 15px; border-radius: 6px;
+            margin-bottom: 15px; font-size: 0.9rem; color: #2b6cb0;
+            display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+        }
+        .comment-info .badge-free {
+            background: var(--success); color: white; padding: 2px 10px;
+            border-radius: 20px; font-size: 0.7rem; font-weight: bold;
+            margin-left: auto;
+        }
+        @media (max-width: 600px) {
+            .comment-info { flex-direction: column; text-align: center; }
+            .comment-info .badge-free { margin-left: 0; }
+        }
+        .toast {
+            position: fixed; bottom: 20px; right: 20px; padding: 15px 25px;
+            border-radius: 8px; color: white; font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(100px); opacity: 0;
+            transition: all 0.3s ease; z-index: 1000; max-width: 400px;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+        .toast.info { background: var(--secondary); }
+    </style>
+</head>
+<body>
 
+    <header>
+        <h1>🚨 INCIDENT DASHBOARD: ESP GE-6</h1>
+        <p>Preliminary Investigation Report &mdash; Document No: PCID/F-1/HSSE/HSEMS/10.2/02</p>
+        <div style="margin-top: 10px;">
+            <span class="status-badge"><i class="fa-solid fa-circle"></i> ACTIVE INVESTIGATION</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="grid">
+            
+            <div class="main-content">
+                
+                <div class="card">
+                    <h2><i class="fa-solid fa-file-lines"></i> Executive Summary</h2>
+                    <p style="text-align: justify; font-size: 0.95rem; line-height: 1.8;">
+                        On <strong>June 25, 2026, at 11:00 WIB</strong>, a thermal incident occurred on a backup Diesel Generator unit owned and operated by PT. Unisat at the Gemah#4 Pad (GE#4 Pad). The generator was put into service on June 22, 2026, as a backup replacement for the main generator that had tripped the previous day. This deployment was part of an immediate action to minimize Loss Production Opportunity (LPO) from the Shut-In (S/I) well by restoring primary electrical power to the GE-6 ESP system. Upon detecting the incident, on-site HSSE personnel responded promptly by utilizing Portable Fire Extinguishers (APAR), successfully containing and extinguishing the localized flame.
+                    </p>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">0</div>
+                            <div class="stat-label">Injuries</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">APAR Used</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">5m</div>
+                            <div class="stat-label">Response Time</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fa-solid fa-diagram-project"></i> Root Cause Chain Reaction</h2>
+                    <div class="timeline">
+                        <div class="step">
+                            <div class="step-title">1. Pulley Broken</div>
+                            <div class="step-desc">Structural failure / minor micro-cracks on the fan belt pulley component.</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-title">2. Unbalance Rotation</div>
+                            <div class="step-desc">The pulley damage causes eccentric and unstable high-RPM rotation.</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-title">3. Fan Belt Broken / Parted</div>
+                            <div class="step-desc">The extreme unbalance rotation snaps the cooling fan drive belt.</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-title">4. Extended Overheat</div>
+                            <div class="step-desc">Engine operated without forced cooling, driving critical block temperatures high.</div>
+                        </div>
+                        <div class="step" style="border-left-color: #d69e2e;">
+                            <div class="step-title">5. Safety Device Malfunction <span class="badge-danger">FAILED</span></div>
+                            <div class="step-desc">The emergency shutdown (ESD) system failed to automatically kill the engine.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fa-solid fa-triangle-exclamation"></i> Fire Triangle Analysis</h2>
+                    <p style="font-size: 0.9rem; margin-bottom: 15px; color: #4a5568;">The extended overheating triggered thermal degradation of equipment materials, completing the ignition criteria:</p>
+                    <div class="triangle-container">
+                        <div class="fire-triangle">
+                            <div class="element" id="fuel">
+                                <i class="fa-solid fa-gas-pump" style="color:#dd6b20;"></i> Fuel
+                                <small>Leaking Injector Seal (Cylinder 5)</small>
+                            </div>
+                            <div class="element" id="heat">
+                                <i class="fa-solid fa-bolt" style="color:var(--danger)"></i> Heat / Spark
+                                <small>Melted MPU Cable & Level Wiring</small>
+                            </div>
+                            <div class="element" id="oxygen">
+                                <i class="fa-solid fa-wind" style="color:#319795;"></i> Oxygen
+                                <small>20.9% Ambient Air</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="sidebar">
+                
+                <div class="card">
+                    <h2><i class="fa-solid fa-circle-info"></i> Incident Meta</h2>
+                    <table class="meta-table">
+                        <tr><td>Location</td><td><i class="fa-solid fa-map-pin" style="color:var(--secondary);"></i> Gemah#4 Pad (GE#4)</td></tr>
+                        <tr><td>Date / Time</td><td><i class="fa-regular fa-calendar"></i> June 25, 2026 / 11:00 WIB</td></tr>
+                        <tr><td>Department</td><td>Field Production Eng.</td></tr>
+                        <tr><td>Well Proximity</td><td>~13m to Well GE-16</td></tr>
+                        <tr><td>Reported By</td><td>Rifky Adhatama</td></tr>
+                        <tr><td>Supervisor</td><td>Almerio Soriano</td></tr>
+                        <tr><td>Status</td><td><span style="color:var(--danger); font-weight:bold;">Under Investigation</span></td></tr>
+                    </table>
+                </div>
+
+                <!-- ============================================
+                CARD KOMENTAR DENGAN GOOGLE SHEETS
+                ============================================ -->
+                <div class="card">
+                    <h2><i class="fa-regular fa-comments"></i> Investigation Notes</h2>
+                    
+                    <div class="comment-info">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                        <span>Share your engineering notes & observations</span>
+                        <span class="badge-free"><i class="fa-regular fa-circle-check"></i> No Login Required</span>
+                    </div>
+
+                    <div class="comment-form" id="commentForm">
+                        <div class="form-row">
+                            <input type="text" id="userName" placeholder="Your Name" required maxlength="50">
+                            <input type="text" id="userDepartment" placeholder="Department (optional)" maxlength="50">
+                        </div>
+                        <textarea id="commentText" placeholder="Write your engineering notes, observations, or verification results..." required maxlength="1000"></textarea>
+                        <div class="char-counter" id="charCounter">0/1000</div>
+                        <button class="btn" onclick="submitComment()" id="submitBtn">
+                            <i class="fa-regular fa-paper-plane"></i> Submit Note
+                        </button>
+                    </div>
+
+                    <div id="commentStatus"></div>
+
+                    <div class="comment-list" id="commentList">
+                        <div class="comment-loading">
+                            <i class="fa-solid fa-spinner"></i>
+                            <p>Loading notes...</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ============================================
+        // KONFIGURASI - GANTI DENGAN URL APPS SCRIPT ANDA
+        // ============================================
+        const CONFIG = {
+            // ★★★ GANTI URL INI DENGAN APPS SCRIPT URL ANDA ★★★
+            SCRIPT_URL: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
+            MAX_COMMENTS: 50,
+        };
+
+        // ============================================
+        // FUNGSI UTAMA
+        // ============================================
+
+        document.addEventListener("DOMContentLoaded", function() {
+            loadComments();
+            setupCharCounter();
+            loadDrafts();
+            setInterval(loadComments, 30000);
+        });
+
+        async function submitComment() {
+            const nameInput = document.getElementById("userName");
+            const deptInput = document.getElementById("userDepartment");
+            const textInput = document.getElementById("commentText");
+            const btn = document.getElementById("submitBtn");
+            
+            if (!nameInput.value.trim()) {
+                showToast('Please enter your name.', 'error');
+                nameInput.focus();
+                return;
+            }
+
+            if (!textInput.value.trim()) {
+                showToast('Please write your note.', 'error');
+                textInput.focus();
+                return;
+            }
+
+            if (textInput.value.length > 1000) {
+                showToast('Note too long! Maximum 1000 characters.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+
+            try {
+                const commentData = {
+                    name: nameInput.value.trim(),
+                    department: deptInput.value.trim() || 'Not specified',
+                    text: textInput.value.trim(),
+                    timestamp: new Date().toISOString()
+                };
+
+                await fetch(CONFIG.SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(commentData)
+                });
+
+                textInput.value = '';
+                nameInput.value = '';
+                deptInput.value = '';
+                updateCharCounter();
+                clearDrafts();
+                
+                showToast('✅ Note submitted successfully!', 'success');
+                setTimeout(loadComments, 1000);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('❌ Failed to submit note. Please try again.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Submit Note';
+            }
+        }
+
+        async function loadComments() {
+            const list = document.getElementById("commentList");
+            list.innerHTML = `
+                <div class="comment-loading">
+                    <i class="fa-solid fa-spinner"></i>
+                    <p>Loading notes...</p>
+                </div>
+            `;
+
+            try {
+                const response = await fetch(CONFIG.SCRIPT_URL);
+                const data = await response.json();
+
+                if (data && data.length > 0) {
+                    data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                    const comments = data.slice(0, CONFIG.MAX_COMMENTS);
+                    
+                    list.innerHTML = comments.map((c, index) => `
+                        <div class="comment-item" style="animation-delay: ${index * 0.05}s">
+                            <div class="comment-header">
+                                <div class="comment-user">
+                                    <div class="avatar">${getInitials(c.name)}</div>
+                                    ${escapeHTML(c.name)}
+                                    ${c.department && c.department !== 'Not specified' ? 
+                                        `<span style="font-weight:normal;color:#718096;font-size:0.8rem;">
+                                            <i class="fa-regular fa-building"></i> ${escapeHTML(c.department)}
+                                        </span>` : ''}
+                                </div>
+                                <div class="comment-time">
+                                    <i class="fa-regular fa-clock"></i> ${formatDate(c.timestamp)}
+                                </div>
+                            </div>
+                            <div class="comment-text">${escapeHTML(c.text)}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fa-regular fa-comment"></i>
+                            <p>No notes submitted yet.</p>
+                            <p style="font-size:0.8rem;color:#a0aec0;">Be the first to share your observations!</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading comments:', error);
+                list.innerHTML = `
+                    <div class="comment-error">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        Failed to load notes. Please refresh the page.
+                        <br><small>Make sure the Apps Script is deployed correctly.</small>
+                    </div>
+                `;
+            }
+        }
+
+        // ============================================
+        // FUNGSI PENDUKUNG
+        // ============================================
+
+        function getInitials(name) {
+            return name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
+        }
+
+        function formatDate(timestamp) {
+            try {
+                const date = new Date(timestamp);
+                return date.toLocaleString('en-US', {
+                    month: 'short', day: 'numeric', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+            } catch {
+                return 'Just now';
+            }
+        }
+
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function setupCharCounter() {
+            document.getElementById('commentText').addEventListener('input', updateCharCounter);
+        }
+
+        function updateCharCounter() {
+            const textarea = document.getElementById('commentText');
+            const counter = document.getElementById('charCounter');
+            const length = textarea.value.length;
+            counter.textContent = `${length}/1000`;
+            counter.classList.toggle('limit', length > 900);
+        }
+
+        function loadDrafts() {
+            const savedComment = localStorage.getItem('gs_comment_draft');
+            const savedName = localStorage.getItem('gs_name_draft');
+            const savedDept = localStorage.getItem('gs_dept_draft');
+            if (savedComment) document.getElementById('commentText').value = savedComment;
+            if (savedName) document.getElementById('userName').value = savedName;
+            if (savedDept) document.getElementById('userDepartment').value = savedDept;
+            updateCharCounter();
+        }
+
+        function clearDrafts() {
+            localStorage.removeItem('gs_comment_draft');
+            localStorage.removeItem('gs_name_draft');
+            localStorage.removeItem('gs_dept_draft');
+        }
+
+        document.getElementById('commentText').addEventListener('input', function() {
+            localStorage.setItem('gs_comment_draft', this.value);
+            updateCharCounter();
+        });
+
+        document.getElementById('userName').addEventListener('input', function() {
+            localStorage.setItem('gs_name_draft', this.value);
+        });
+
+        document.getElementById('userDepartment').addEventListener('input', function() {
+            localStorage.setItem('gs_dept_draft', this.value);
+        });
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        window.submitComment = submitComment;
+        console.log('✅ Google Sheets Comments ready!');
+        console.log(`📊 Script URL: ${CONFIG.SCRIPT_URL}`);
+    </script>
+
+</body>
+</html>
