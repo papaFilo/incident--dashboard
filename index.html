@@ -6,30 +6,53 @@
     <title>Incident Dashboard - Gemah#4 Pad</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Semua style CSS dari sebelumnya */
-        /* (Gunakan style dari kode sebelumnya) */
-        
-        /* Short version - minimum styles */
         :root {
             --primary: #1a365d;
             --secondary: #3182ce;
             --danger: #e53e3e;
             --success: #38a169;
+            --warning: #d69e2e;
             --dark: #2d3748;
             --light: #f7fafc;
             --border: #e2e8f0;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
-        body { background-color: #f0f2f5; color: var(--dark); line-height: 1.6; }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
         header {
             background: linear-gradient(135deg, var(--primary) 0%, #2a4a7f 100%);
-            color: white; padding: 20px; text-align: center;
+            color: white;
+            padding: 20px;
+            text-align: center;
             border-bottom: 4px solid var(--secondary);
-            position: sticky; top: 0; z-index: 100;
+            position: sticky;
+            top: 0;
+            z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        header h1 { font-size: 1.8rem; letter-spacing: 1px; }
-        header p { font-size: 0.9rem; color: #a0aec0; margin-top: 5px; }
+
+        header h1 {
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            color: #a0aec0;
+            margin-top: 5px;
+        }
+
         header .temporary-notice {
             font-size: 0.8rem;
             color: #fbd38d;
@@ -37,6 +60,7 @@
             font-style: italic;
             opacity: 0.9;
         }
+
         header .contribution-notice {
             font-size: 0.85rem;
             color: #bee3f8;
@@ -48,325 +72,653 @@
             margin-right: auto;
             line-height: 1.5;
         }
+
         .status-badge {
-            display: inline-block; background: var(--danger); color: white;
-            padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;
-            font-weight: bold; animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
-        .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
-        .card {
-            background: white; border-radius: 10px; padding: 20px;
-            margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
-        h2 {
-            color: var(--primary); border-left: 4px solid var(--secondary);
-            padding-left: 10px; margin-bottom: 15px; font-size: 1.3rem;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .meta-table { width: 100%; border-collapse: collapse; }
-        .meta-table td { padding: 10px; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
-        .meta-table td:first-child { font-weight: bold; color: #4a5568; width: 40%; }
-        .timeline { display: flex; flex-direction: column; gap: 8px; margin: 15px 0; position: relative; }
-        .timeline::before {
-            content: ''; position: absolute; left: 15px; top: 0; bottom: 0;
-            width: 2px; background: var(--border);
-        }
-        .step {
-            background: var(--light); padding: 12px 15px 12px 40px;
-            border-radius: 6px; border-left: 4px solid var(--danger);
-            position: relative; transition: background 0.2s;
-        }
-        .step:hover { background: #edf2f7; }
-        .step::before {
-            content: ''; position: absolute; left: 10px; top: 50%;
-            transform: translateY(-50%); width: 12px; height: 12px;
-            border-radius: 50%; background: var(--danger);
-            border: 2px solid white; box-shadow: 0 0 0 2px var(--danger);
-        }
-        .step:last-child::before { background: var(--warning); box-shadow: 0 0 0 2px var(--warning); }
-        .step-title { font-weight: bold; color: var(--primary); }
-        .step-desc { font-size: 0.9rem; color: #4a5568; }
-        .badge-danger {
-            background-color: #fed7d7; color: #9b2c2c;
-            padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;
-            font-weight: bold; margin-left: 8px;
-        }
-        
-        /* ============================================
-           FIRE TRIANGLE - DIPERBAIKI JARAKNYA
-           ============================================ */
-        .triangle-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 60px 40px;
-            background: linear-gradient(135deg, #fffaf0 0%, #feebc8 100%);
-            border-radius: 8px;
-            border: 1px solid #fbd38d;
-            position: relative;
-            min-height: 350px;
-        }
-        .fire-triangle {
-            width: 0;
-            height: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-bottom: 260px solid rgba(245, 158, 11, 0.08);
-            position: relative;
-            margin: 30px 0;
-        }
-        .fire-triangle::after {
-            content: '🔥';
-            position: absolute;
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 2.5rem;
-        }
-        .element {
-            position: absolute;
-            font-size: 0.9rem;
+            display: inline-block;
+            background: var(--warning);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: bold;
-            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
             background: white;
-            padding: 12px 16px;
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-            border: 2px solid var(--border);
-            min-width: 150px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            z-index: 2;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .element:hover {
-            transform: scale(1.08) !important;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+
+        .card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
         }
-        .element i {
+
+        h2 {
+            color: var(--primary);
+            border-left: 4px solid var(--secondary);
+            padding-left: 10px;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 i {
+            color: var(--secondary);
+        }
+
+        /* Methodology Grid */
+        .methodology-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .methodology-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+
+        .method-box {
+            background: var(--light);
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .method-box.whys {
+            border-left-color: var(--warning);
+        }
+
+        .method-box.fishbone {
+            border-left-color: var(--success);
+        }
+
+        .method-box .method-title {
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: var(--primary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .method-box .method-title i {
+            font-size: 1.1rem;
+        }
+
+        .method-box .why-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 0.85rem;
+            padding: 3px 0;
+            line-height: 1.5;
+        }
+
+        .method-box .why-item .why-label {
+            font-weight: bold;
+            color: var(--warning);
+            min-width: 50px;
+            font-size: 0.8rem;
+        }
+
+        .method-box .why-item .why-arrow {
+            color: #a0aec0;
+        }
+
+        .method-box .why-item .why-text {
+            color: var(--dark);
+        }
+
+        .method-box .why-item .why-text strong {
+            color: var(--danger);
+        }
+
+        .method-box .root-cause-highlight {
+            background: linear-gradient(135deg, #fefcbf 0%, #f6e05e 100%);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--primary);
+            border: 1px solid #ecc94b;
+        }
+
+        .method-box .root-cause-highlight i {
+            color: var(--danger);
+        }
+
+        /* Fishbone Grid */
+        .fishbone-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 20px;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 500px) {
+            .fishbone-grid {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+        }
+
+        .fishbone-category {
+            font-size: 0.8rem;
+            padding: 2px 0;
+        }
+
+        .fishbone-category .cat-label {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 0.8rem;
+        }
+
+        .fishbone-category .cat-items {
+            color: var(--dark);
+            font-size: 0.78rem;
+            padding-left: 4px;
+        }
+
+        .fishbone-category .cat-items .item {
+            display: inline-block;
+            background: white;
+            padding: 1px 8px;
+            border-radius: 10px;
+            margin: 1px 2px;
+            font-size: 0.7rem;
+            border: 1px solid var(--border);
+        }
+
+        .fishbone-category .cat-items .item.red { border-color: #fc8181; color: #9b2c2c; }
+        .fishbone-category .cat-items .item.orange { border-color: #f6ad55; color: #9c6c1c; }
+        .fishbone-category .cat-items .item.blue { border-color: #63b3ed; color: #1a4a7a; }
+        .fishbone-category .cat-items .item.green { border-color: #68d391; color: #22543d; }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background: var(--light);
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .stat-item .stat-icon {
+            font-size: 1.5rem;
             display: block;
-            font-size: 1.8rem;
             margin-bottom: 4px;
         }
-        .element small {
-            display: block;
-            font-weight: normal;
+
+        .stat-number {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
             font-size: 0.75rem;
             color: #718096;
-            margin-top: 4px;
-            line-height: 1.4;
         }
-        
-        /* Posisi elemen - diberi jarak lebih jauh */
-        #fuel {
-            top: -20px;
-            left: -220px;
-            border-color: #dd6b20;
-            background: #fffaf0;
-            transform: translateY(-50%);
+
+        .stat-item.danger { border-left-color: var(--danger); }
+        .stat-item.success { border-left-color: var(--success); }
+        .stat-item.warning { border-left-color: var(--warning); }
+        .stat-item.info { border-left-color: var(--secondary); }
+
+        @media (max-width: 500px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
-        #fuel:hover {
-            transform: translateY(-50%) scale(1.08);
+
+        /* Point List */
+        .point-list {
+            list-style: none;
+            padding: 0;
+            margin: 5px 0;
         }
-        
-        #heat {
-            top: -20px;
-            right: -220px;
-            border-color: var(--danger);
-            background: #fff5f5;
-            transform: translateY(-50%);
+
+        .point-list li {
+            padding: 6px 0 6px 28px;
+            position: relative;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #f0f0f0;
+            line-height: 1.5;
         }
-        #heat:hover {
-            transform: translateY(-50%) scale(1.08);
+
+        .point-list li:last-child {
+            border-bottom: none;
         }
-        
-        #oxygen {
-            bottom: -160px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-color: #319795;
-            background: #f0fff4;
+
+        .point-list li i {
+            position: absolute;
+            left: 0;
+            top: 8px;
+            color: var(--secondary);
+            width: 20px;
+            text-align: center;
         }
-        #oxygen:hover {
-            transform: translateX(-50%) scale(1.08);
+
+        .point-list li .badge {
+            display: inline-block;
+            font-size: 0.65rem;
+            padding: 1px 8px;
+            border-radius: 10px;
+            margin-left: 6px;
+            font-weight: bold;
         }
-        
-        /* ============================================
-           COMMENT STYLES
-           ============================================ */
+
+        .badge-red { background: #fed7d7; color: #9b2c2c; }
+        .badge-orange { background: #feebc8; color: #9c6c1c; }
+        .badge-blue { background: #bee3f8; color: #1a4a7a; }
+        .badge-green { background: #c6f6d5; color: #22543d; }
+
+        .section-subtitle {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.9rem;
+            margin-top: 8px;
+            margin-bottom: 2px;
+        }
+
+        /* Image */
+        .infographic-container {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--light);
+            border: 1px solid var(--border);
+        }
+
+        .infographic-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Video */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Comment Styles */
         .comment-form textarea {
-            width: 100%; padding: 12px; border: 2px solid var(--border);
-            border-radius: 8px; resize: vertical; min-height: 100px;
-            margin-bottom: 10px; font-size: 0.95rem;
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 80px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
+
         .comment-form textarea:focus,
         .comment-form input:focus {
-            outline: none; border-color: var(--secondary);
+            outline: none;
+            border-color: var(--secondary);
             box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
         }
+
         .comment-form input {
-            width: 100%; padding: 10px 12px; border: 2px solid var(--border);
-            border-radius: 8px; margin-bottom: 10px; font-size: 0.95rem;
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .comment-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        @media (max-width: 500px) { .comment-form .form-row { grid-template-columns: 1fr; } }
+
+        .comment-form .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 500px) {
+            .comment-form .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .btn {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white; border: none; padding: 12px 20px; border-radius: 8px;
-            cursor: pointer; font-weight: bold; transition: opacity 0.2s, transform 0.2s;
-            width: 100%; font-size: 1rem;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s, transform 0.2s;
+            width: 100%;
+            font-size: 0.95rem;
         }
-        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .comment-list { margin-top: 20px; max-height: 500px; overflow-y: auto; }
-        .comment-list::-webkit-scrollbar { width: 6px; }
-        .comment-list::-webkit-scrollbar-track { background: var(--light); border-radius: 3px; }
-        .comment-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .comment-list {
+            margin-top: 15px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .comment-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .comment-list::-webkit-scrollbar-track {
+            background: var(--light);
+            border-radius: 3px;
+        }
+        .comment-list::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
         .comment-item {
-            background: var(--light); padding: 12px 15px; border-radius: 8px;
-            margin-bottom: 10px; border: 1px solid var(--border);
+            background: var(--light);
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
             animation: slideIn 0.3s ease;
         }
+
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
         .comment-item .comment-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 8px; flex-wrap: wrap; gap: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+            gap: 4px;
         }
+
         .comment-item .comment-user {
-            font-weight: bold; color: var(--primary);
-            display: flex; align-items: center; gap: 8px;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
         }
+
         .comment-item .comment-user .avatar {
-            width: 28px; height: 28px; border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
             background: linear-gradient(135deg, var(--secondary), var(--primary));
-            color: white; display: flex; align-items: center; justify-content: center;
-            font-size: 12px; font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
         }
-        .comment-item .comment-time { font-size: 0.75rem; color: #718096; }
+
+        .comment-item .comment-time {
+            font-size: 0.7rem;
+            color: #718096;
+        }
+
         .comment-item .comment-text {
-            font-size: 0.95rem; color: #2d3748; line-height: 1.6;
-            white-space: pre-wrap; word-wrap: break-word;
+            font-size: 0.85rem;
+            color: #2d3748;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
-        .comment-loading { text-align: center; padding: 20px; color: #718096; }
-        .comment-loading i { animation: spin 1s linear infinite; font-size: 1.5rem; display: block; margin-bottom: 10px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .comment-loading {
+            text-align: center;
+            padding: 15px;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .comment-loading i {
+            animation: spin 1s linear infinite;
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         .comment-error {
-            background: #fed7d7; color: #9b2c2c; padding: 12px 15px;
-            border-radius: 6px; margin: 10px 0; text-align: center;
+            background: #fed7d7;
+            color: #9b2c2c;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin: 8px 0;
+            text-align: center;
+            font-size: 0.85rem;
         }
+
         .comment-success {
-            background: #c6f6d5; color: #22543d; padding: 12px 15px;
-            border-radius: 6px; margin: 10px 0; text-align: center;
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin: 8px 0;
+            text-align: center;
+            font-size: 0.85rem;
         }
-        .empty-state { color: #a0aec0; font-size: 0.95rem; text-align: center; padding: 30px 20px; }
-        .empty-state i { font-size: 2rem; display: block; margin-bottom: 10px; }
-        .char-counter { text-align: right; font-size: 0.8rem; color: #718096; margin-top: -8px; margin-bottom: 10px; }
-        .char-counter.limit { color: var(--danger); }
+
+        .empty-state {
+            color: #a0aec0;
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .empty-state i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 0.75rem;
+            color: #718096;
+            margin-top: -6px;
+            margin-bottom: 8px;
+        }
+
+        .char-counter.limit {
+            color: var(--danger);
+        }
+
         .comment-info {
-            background: #ebf8ff; padding: 12px 15px; border-radius: 6px;
-            margin-bottom: 15px; font-size: 0.9rem; color: #2b6cb0;
-            display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+            background: #ebf8ff;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: #2b6cb0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
+
         .comment-info .badge-free {
-            background: var(--success); color: white; padding: 2px 10px;
-            border-radius: 20px; font-size: 0.7rem; font-weight: bold;
+            background: var(--success);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: bold;
             margin-left: auto;
         }
+
         @media (max-width: 600px) {
-            .comment-info { flex-direction: column; text-align: center; }
-            .comment-info .badge-free { margin-left: 0; }
+            .comment-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            .comment-info .badge-free {
+                margin-left: 0;
+            }
         }
+
         .toast {
-            position: fixed; bottom: 20px; right: 20px; padding: 15px 25px;
-            border-radius: 8px; color: white; font-weight: bold;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transform: translateY(100px); opacity: 0;
-            transition: all 0.3s ease; z-index: 1000; max-width: 400px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            max-width: 350px;
+            font-size: 0.9rem;
         }
-        .toast.show { transform: translateY(0); opacity: 1; }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
         .toast.success { background: var(--success); }
         .toast.error { background: var(--danger); }
         .toast.info { background: var(--secondary); }
-        
-        /* Responsive untuk Fire Triangle */
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .triangle-container {
-                padding: 40px 20px;
-                min-height: 300px;
-            }
-            .fire-triangle {
-                border-left-width: 100px;
-                border-right-width: 100px;
-                border-bottom-width: 173px;
-            }
-            .element {
-                min-width: 110px;
-                font-size: 0.75rem;
-                padding: 8px 10px;
-            }
-            .element i {
-                font-size: 1.3rem;
-            }
-            #fuel {
-                left: -160px;
-                top: -10px;
-            }
-            #heat {
-                right: -160px;
-                top: -10px;
-            }
-            #oxygen {
-                bottom: -130px;
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
+
         @media (max-width: 500px) {
-            .triangle-container {
-                padding: 30px 10px;
-                min-height: 250px;
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
             }
-            .fire-triangle {
-                border-left-width: 70px;
-                border-right-width: 70px;
-                border-bottom-width: 121px;
+            header h1 {
+                font-size: 1.2rem;
             }
-            .element {
-                min-width: 80px;
-                font-size: 0.65rem;
-                padding: 6px 8px;
+            .card {
+                padding: 14px;
             }
-            .element i {
+            h2 {
                 font-size: 1rem;
             }
-            .element small {
-                font-size: 0.6rem;
+        }
+
+        @media print {
+            header {
+                position: static;
             }
-            #fuel {
-                left: -110px;
-                top: -5px;
+            .comment-form,
+            .btn {
+                display: none;
             }
-            #heat {
-                right: -110px;
-                top: -5px;
+            .card {
+                break-inside: avoid;
+                box-shadow: none;
             }
-            #oxygen {
-                bottom: -90px;
-            }
+        }
+
+        .methodology-footer {
+            text-align: center;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .methodology-footer i {
+            color: var(--success);
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>🚨 INCIDENT DASHBOARD: GENERATOR ESP GE-6</h1>
-        <p>Preliminary Investigation Report &mdash; Web created by Almerio FPE</p>
+        <h1>🚨 INCIDENT DASHBOARD: ESP GE-6</h1>
+        <p>Finalizing Investigation Report &mdash; Web created by Almerio FPE</p>
         <div class="temporary-notice">
             <i class="fa-regular fa-clock"></i> This website is temporary and will be removed after the incident report is completed
         </div>
@@ -374,134 +726,287 @@
             <i class="fa-regular fa-hand-peace"></i> We highly value your contribution. To contribute, please scroll down to find the comment and input section to submit your suggestions and thoughts.
         </div>
         <div style="margin-top: 10px;">
-            <span class="status-badge"><i class="fa-solid fa-circle"></i> ACTIVE INVESTIGATION</span>
+            <span class="status-badge"><i class="fa-solid fa-circle"></i> FINALIZING INVESTIGATION REPORT</span>
         </div>
     </header>
 
     <div class="container">
+
+        <!-- ============================================ -->
+        <!-- GRID 2 KOLOM -->
+        <!-- ============================================ -->
         <div class="grid">
-            
-            <div class="main-content">
-                
+
+            <!-- ============================================ -->
+            <!-- LEFT COLUMN - SUMMARY -->
+            <!-- ============================================ -->
+            <div class="left-column">
+
+                <!-- Incident Overview -->
                 <div class="card">
-                    <h2><i class="fa-solid fa-file-lines"></i> Executive Summary</h2>
-                    <p style="text-align: justify; font-size: 0.95rem; line-height: 1.8;">
-                        On <strong>June 25, 2026, at 11:00 WIB</strong>, a thermal incident occurred on a backup Diesel Generator unit owned and operated by PT. Unisat at the Gemah#4 Pad (GE#4 Pad). The generator was put into service on June 22, 2026, as a backup replacement for the main generator that had tripped the previous day. This deployment was part of an immediate action to minimize Loss Production Opportunity (LPO) from the Shut-In (S/I) well by restoring primary electrical power to the GE-6 ESP system. Upon detecting the incident, on-site HSSE personnel responded promptly by utilizing Portable Fire Extinguishers (APAR), successfully containing and extinguishing the localized flame.
+                    <h2><i class="fa-solid fa-file-lines"></i> Incident Overview</h2>
+                    <p style="font-size:0.92rem;line-height:1.7;text-align:justify;">
+                        On <strong>June 25, 2026 at 11:00 WIB</strong>, a generator unit belonging to PT. Unisat at <strong>Gemah #4 Pad</strong> experienced a thermal incident. The generator was operating as backup for GE-6 ESP system. The fire was successfully extinguished using 4 APAR units with no injuries reported.
                     </p>
-                    <!-- Stats grid dihapus sesuai permintaan -->
-                </div>
-
-                <div class="card">
-                    <h2><i class="fa-solid fa-diagram-project"></i> Root Cause Chain Reaction</h2>
-                    <div class="timeline">
-                        <div class="step">
-                            <div class="step-title">1. Pulley Broken</div>
-                            <div class="step-desc">Structural failure / minor micro-cracks on the fan belt pulley component.</div>
+                    <div class="stats-grid">
+                        <div class="stat-item danger">
+                            <span class="stat-icon">🔥</span>
+                            <div class="stat-number">Thermal</div>
+                            <div class="stat-label">Incident Type</div>
                         </div>
-                        <div class="step">
-                            <div class="step-title">2. Unbalance Rotation</div>
-                            <div class="step-desc">The pulley damage causes eccentric and unstable high-RPM rotation.</div>
+                        <div class="stat-item success">
+                            <span class="stat-icon">✅</span>
+                            <div class="stat-number">0</div>
+                            <div class="stat-label">Injuries</div>
                         </div>
-                        <div class="step">
-                            <div class="step-title">3. Fan Belt Broken / Parted</div>
-                            <div class="step-desc">The extreme unbalance rotation snaps the cooling fan drive belt.</div>
-                        </div>
-                        <div class="step">
-                            <div class="step-title">4. Extended Overheat</div>
-                            <div class="step-desc">Engine operated without forced cooling, driving critical block temperatures high.</div>
-                        </div>
-                        <div class="step" style="border-left-color: #d69e2e;">
-                            <div class="step-title">5. Safety Device Malfunction <span class="badge-danger">FAILED</span></div>
-                            <div class="step-desc">The emergency shutdown (ESD) system failed to automatically kill the engine.</div>
+                        <div class="stat-item info">
+                            <span class="stat-icon">⛽</span>
+                            <div class="stat-number">21 BOPD</div>
+                            <div class="stat-label">LPO (9.5 hrs)</div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Direct Causes -->
                 <div class="card">
-                    <h2><i class="fa-solid fa-triangle-exclamation"></i> Fire Triangle Analysis</h2>
-                    <p style="font-size: 0.9rem; margin-bottom: 15px; color: #4a5568;">The extended overheating triggered thermal degradation of equipment materials, completing the ignition criteria:</p>
-                    <div class="triangle-container">
-                        <div class="fire-triangle">
-                            <div class="element" id="fuel">
-                                <i class="fa-solid fa-gas-pump" style="color:#dd6b20;"></i> Fuel
-                                <small>Leaking Injector Seal (Cylinder 5)</small>
-                            </div>
-                            <div class="element" id="heat">
-                                <i class="fa-solid fa-bolt" style="color:var(--danger)"></i> Heat / Spark
-                                <small>Melted MPU Cable & Level Wiring</small>
-                            </div>
-                            <div class="element" id="oxygen">
-                                <i class="fa-solid fa-wind" style="color:#319795;"></i> Oxygen
-                                <small>20.9% Ambient Air</small>
-                            </div>
-                        </div>
-                    </div>
+                    <h2><i class="fa-solid fa-bolt"></i> Direct Causes</h2>
+                    <ul class="point-list">
+                        <li><i class="fa-solid fa-circle-exclamation" style="color:var(--danger);"></i> Unbalanced fan belt pulley (cracks) → fan belt snapped → engine ran without cooling <span class="badge badge-red">Mechanical</span></li>
+                        <li><i class="fa-solid fa-circle-exclamation" style="color:var(--danger);"></i> ESD system malfunction prevented automatic engine shutdown during overheating <span class="badge badge-red">Safety System</span></li>
+                        <li><i class="fa-solid fa-circle-exclamation" style="color:var(--danger);"></i> Overheat damaged cylinder #5 nozzle seal → diesel fuel leak <span class="badge badge-orange">Secondary Damage</span></li>
+                        <li><i class="fa-solid fa-circle-exclamation" style="color:var(--danger);"></i> Fire triangle elements fulfilled (heat + fuel + oxygen) <span class="badge badge-red">Ignition</span></li>
+                    </ul>
+                </div>
+
+                <!-- Indirect Causes -->
+                <div class="card">
+                    <h2><i class="fa-solid fa-users-gear"></i> Indirect Causes</h2>
+                    <div class="section-subtitle"><i class="fa-regular fa-user" style="margin-right:6px;"></i> Personal Related</div>
+                    <ul class="point-list">
+                        <li><i class="fa-regular fa-clock" style="color:var(--warning);"></i> Supervision coverage not extended to all operational hours</li>
+                        <li><i class="fa-regular fa-face-tired" style="color:var(--warning);"></i> Operator fatigue due to extended working hours</li>
+                        <li><i class="fa-regular fa-graduation-cap" style="color:var(--warning);"></i> Insufficient refresher training for early warning detection</li>
+                    </ul>
+                    <div class="section-subtitle" style="margin-top:10px;"><i class="fa-solid fa-briefcase" style="margin-right:6px;"></i> Job Related</div>
+                    <ul class="point-list">
+                        <li><i class="fa-regular fa-file-lines" style="color:var(--secondary);"></i> No predictive maintenance program for early degradation detection</li>
+                        <li><i class="fa-regular fa-file-lines" style="color:var(--secondary);"></i> No technical assessment for ESD system functionality</li>
+                        <li><i class="fa-regular fa-file-lines" style="color:var(--secondary);"></i> Inadequate preventive maintenance implementation</li>
+                    </ul>
                 </div>
 
             </div>
 
-            <div class="sidebar">
-                
+            <!-- ============================================ -->
+            <!-- RIGHT COLUMN - INFOGRAPHIC + VIDEO + ROOT + RECOMMENDATIONS -->
+            <!-- ============================================ -->
+            <div class="right-column">
+
+                <!-- Infographic -->
                 <div class="card">
-                    <h2><i class="fa-solid fa-circle-info"></i> Incident Meta</h2>
-                    <table class="meta-table">
-                        <tr><td>Location</td><td><i class="fa-solid fa-map-pin" style="color:var(--secondary);"></i> Gemah#4 Pad (GE#4)</td></tr>
-                        <tr><td>Date / Time</td><td><i class="fa-regular fa-calendar"></i> June 25, 2026 / 11:00 WIB</td></tr>
-                        <tr><td>Department</td><td>Field Production Eng.</td></tr>
-                        <tr><td>Well Proximity</td><td>~13m to Well GE-16</td></tr>
-                        <tr><td>Reported By</td><td>Rifky Adhatama</td></tr>
-                        <tr><td>Supervisor</td><td>Almerio Soriano</td></tr>
-                        <tr><td>Status</td><td><span style="color:var(--danger); font-weight:bold;">Under Investigation</span></td></tr>
-                    </table>
+                    <h2><i class="fa-solid fa-chart-simple"></i> Investigation Summary</h2>
+                    <div class="infographic-container">
+                        <img src="image/infografik.png" alt="Infographic Investigation Summary">
+                    </div>
+                    <p style="font-size:0.75rem;color:#718096;margin-top:6px;text-align:center;">
+                        <i class="fa-regular fa-image"></i> Infographic - Incident Investigation Summary
+                    </p>
                 </div>
 
-                <!-- ============================================
-                CARD KOMENTAR DENGAN GOOGLE SHEETS
-                ============================================ -->
+                <!-- Video Card -->
                 <div class="card">
-                    <h2><i class="fa-regular fa-comments"></i> Investigation Notes</h2>
-                    
-                    <div class="comment-info">
-                        <i class="fa-regular fa-pen-to-square"></i>
-                        <span>Share your engineering notes & observations</span>
-                        <span class="badge-free"><i class="fa-regular fa-circle-check"></i> No Login Required</span>
+                    <h2><i class="fa-solid fa-video"></i> Incident Overview Video</h2>
+                    <div class="video-container">
+                        <iframe 
+                            src="https://player.vimeo.com/video/VIDEO_ID?title=0&byline=0&portrait=0" 
+                            frameborder="0" 
+                            allow="autoplay; fullscreen; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
                     </div>
+                    <p style="font-size:0.75rem;color:#718096;margin-top:6px;text-align:center;">
+                        <i class="fa-regular fa-circle-play"></i> Incident overview video - Gemah#4 Pad
+                    </p>
+                </div>
 
-                    <div class="comment-form" id="commentForm">
-                        <div class="form-row">
-                            <input type="text" id="userName" placeholder="Your Name" required maxlength="50">
-                            <input type="text" id="userDepartment" placeholder="Department (optional)" maxlength="50">
-                        </div>
-                        <textarea id="commentText" placeholder="Write your engineering notes, observations, or verification results..." required maxlength="1000"></textarea>
-                        <div class="char-counter" id="charCounter">0/1000</div>
-                        <button class="btn" onclick="submitComment()" id="submitBtn">
-                            <i class="fa-regular fa-paper-plane"></i> Submit Note
-                        </button>
-                    </div>
+                <!-- Root Causes -->
+                <div class="card">
+                    <h2><i class="fa-solid fa-tree"></i> Root Causes</h2>
+                    <ul class="point-list">
+                        <li><i class="fa-regular fa-circle-xmark" style="color:var(--danger);"></i> No SOP for "Equipment Readiness Inspection" <span class="badge badge-red">Procedural</span></li>
+                        <li><i class="fa-regular fa-circle-xmark" style="color:var(--danger);"></i> No predictive maintenance program <span class="badge badge-orange">Maintenance</span></li>
+                        <li><i class="fa-regular fa-circle-xmark" style="color:var(--danger);"></i> No structured supervision schedule <span class="badge badge-blue">Supervision</span></li>
+                        <li><i class="fa-regular fa-circle-xmark" style="color:var(--danger);"></i> No periodic ESD technical assessment <span class="badge badge-blue">Technical</span></li>
+                    </ul>
+                </div>
 
-                    <div id="commentStatus"></div>
-
-                    <div class="comment-list" id="commentList">
-                        <div class="comment-loading">
-                            <i class="fa-solid fa-spinner"></i>
-                            <p>Loading notes...</p>
-                        </div>
-                    </div>
+                <!-- Recommendations -->
+                <div class="card">
+                    <h2><i class="fa-solid fa-list-check"></i> Recommendations</h2>
+                    <ul class="point-list">
+                        <li><i class="fa-regular fa-check-circle" style="color:var(--success);"></i> Develop SOP for Equipment Readiness Inspection</li>
+                        <li><i class="fa-regular fa-check-circle" style="color:var(--success);"></i> Conduct ESD technical assessment & testing</li>
+                        <li><i class="fa-regular fa-check-circle" style="color:var(--success);"></i> Establish full-time supervision schedule</li>
+                        <li><i class="fa-regular fa-check-circle" style="color:var(--success);"></i> Implement predictive maintenance program</li>
+                        <li><i class="fa-regular fa-check-circle" style="color:var(--success);"></i> Provide refresher training & competency assessment</li>
+                    </ul>
                 </div>
 
             </div>
 
         </div>
+
+        <!-- ============================================ -->
+        <!-- FULL WIDTH - INVESTIGATION METHODOLOGY -->
+        <!-- ============================================ -->
+        <div class="card">
+            <h2><i class="fa-solid fa-microscope"></i> Investigation Methodology</h2>
+            <p style="font-size:0.88rem;color:#4a5568;margin-bottom:12px;">
+                This incident was analyzed using systematic root cause analysis techniques to identify the underlying causes and contributing factors.
+            </p>
+
+            <div class="methodology-grid">
+                <!-- 5 Whys Analysis -->
+                <div class="method-box whys">
+                    <div class="method-title">
+                        <i class="fa-solid fa-question" style="color:var(--warning);"></i> 5 Whys Analysis
+                        <span style="font-size:0.65rem;background:var(--warning);color:white;padding:1px 10px;border-radius:10px;margin-left:auto;">Root Cause Tracing</span>
+                    </div>
+                    <div class="why-item">
+                        <span class="why-label">Why 1</span>
+                        <span class="why-arrow">→</span>
+                        <span class="why-text">Fire occurred</span>
+                    </div>
+                    <div class="why-item">
+                        <span class="why-label">Why 2</span>
+                        <span class="why-arrow">→</span>
+                        <span class="why-text">Engine overheated &amp; ESD <strong>failed</strong></span>
+                    </div>
+                    <div class="why-item">
+                        <span class="why-label">Why 3</span>
+                        <span class="why-arrow">→</span>
+                        <span class="why-text">Fan belt <strong>snapped</strong></span>
+                    </div>
+                    <div class="why-item">
+                        <span class="why-label">Why 4</span>
+                        <span class="why-arrow">→</span>
+                        <span class="why-text">Pulley damaged (<strong>unbalance</strong>)</span>
+                    </div>
+                    <div class="why-item">
+                        <span class="why-label">Why 5</span>
+                        <span class="why-arrow">→</span>
+                        <span class="why-text">No <strong>predictive maintenance</strong> program</span>
+                    </div>
+                    <div class="root-cause-highlight">
+                        <i class="fa-solid fa-bullseye"></i> ROOT CAUSE: No SOP for Equipment Readiness Inspection &amp; Lack of Predictive Maintenance
+                    </div>
+                </div>
+
+                <!-- Fishbone Diagram -->
+                <div class="method-box fishbone">
+                    <div class="method-title">
+                        <i class="fa-solid fa-diagram-project" style="color:var(--success);"></i> Fishbone Diagram
+                        <span style="font-size:0.65rem;background:var(--success);color:white;padding:1px 10px;border-radius:10px;margin-left:auto;">6 Categories</span>
+                    </div>
+                    <div class="fishbone-grid">
+                        <div class="fishbone-category">
+                            <span class="cat-label">👤 Persons</span>
+                            <div class="cat-items">
+                                <span class="item red">Limited Supervision</span>
+                                <span class="item orange">Fatigue</span>
+                                <span class="item blue">No Refresher Training</span>
+                            </div>
+                        </div>
+                        <div class="fishbone-category">
+                            <span class="cat-label">⚙️ Machines</span>
+                            <div class="cat-items">
+                                <span class="item red">Damaged Pulley</span>
+                                <span class="item orange">Failed ESD</span>
+                                <span class="item blue">No Monitoring Sensors</span>
+                            </div>
+                        </div>
+                        <div class="fishbone-category">
+                            <span class="cat-label">📋 Methods</span>
+                            <div class="cat-items">
+                                <span class="item red">No SOP</span>
+                                <span class="item orange">No Pre-Startup Check</span>
+                                <span class="item blue">No Predictive Maint.</span>
+                            </div>
+                        </div>
+                        <div class="fishbone-category">
+                            <span class="cat-label">📊 Measurement</span>
+                            <div class="cat-items">
+                                <span class="item red">Heat Sensor Failed</span>
+                                <span class="item orange">No Early Warning</span>
+                            </div>
+                        </div>
+                        <div class="fishbone-category">
+                            <span class="cat-label">🧱 Material</span>
+                            <div class="cat-items">
+                                <span class="item green">No Data</span>
+                            </div>
+                        </div>
+                        <div class="fishbone-category">
+                            <span class="cat-label">🌍 Environment</span>
+                            <div class="cat-items">
+                                <span class="item green">No Significant Factor</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="methodology-footer">
+                <i class="fa-regular fa-circle-check"></i> Both methods confirmed the same root cause: <strong>Absence of SOP for Equipment Readiness Inspection &amp; Lack of Predictive Maintenance Program</strong>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- FULL WIDTH - COMMENTS (Google Sheets) -->
+        <!-- ============================================ -->
+        <div class="card">
+            <h2><i class="fa-regular fa-comments"></i> Investigation Notes</h2>
+
+            <div class="comment-info">
+                <i class="fa-regular fa-pen-to-square"></i>
+                <span>Share your engineering notes & observations</span>
+                <span class="badge-free"><i class="fa-regular fa-circle-check"></i> No Login Required</span>
+            </div>
+
+            <div class="comment-form" id="commentForm">
+                <div class="form-row">
+                    <input type="text" id="userName" placeholder="Your Name" required maxlength="50">
+                    <input type="text" id="userDepartment" placeholder="Department (optional)" maxlength="50">
+                </div>
+                <textarea id="commentText" placeholder="Write your engineering notes, observations, or verification results..." required maxlength="1000"></textarea>
+                <div class="char-counter" id="charCounter">0/1000</div>
+                <button class="btn" onclick="submitComment()" id="submitBtn">
+                    <i class="fa-regular fa-paper-plane"></i> Submit Note
+                </button>
+            </div>
+
+            <div id="commentStatus"></div>
+
+            <div class="comment-list" id="commentList">
+                <div class="comment-loading">
+                    <i class="fa-solid fa-spinner"></i>
+                    <p>Loading notes...</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div class="toast" id="toast"></div>
 
+    <!-- ============================================ -->
+    <!-- JAVASCRIPT - GOOGLE SHEETS COMMENTS -->
+    <!-- ============================================ -->
     <script>
         // ============================================
         // KONFIGURASI - GANTI DENGAN URL APPS SCRIPT ANDA
         // ============================================
         const CONFIG = {
-            // ★★★ GANTI URL INI DENGAN APPS SCRIPT URL ANDA ★★★
             SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxl3UDGyHzQKxkIhL13auEDrW2kzvfxhmsJZ_ZoRgcvG0B3A4Yf04wmtXjMyqwjTboiPw/exec',
             MAX_COMMENTS: 50,
         };
@@ -522,7 +1027,7 @@
             const deptInput = document.getElementById("userDepartment");
             const textInput = document.getElementById("commentText");
             const btn = document.getElementById("submitBtn");
-            
+
             if (!nameInput.value.trim()) {
                 showToast('Please enter your name.', 'error');
                 nameInput.focus();
@@ -563,7 +1068,7 @@
                 deptInput.value = '';
                 updateCharCounter();
                 clearDrafts();
-                
+
                 showToast('✅ Note submitted successfully!', 'success');
                 setTimeout(loadComments, 1000);
 
@@ -592,7 +1097,7 @@
                 if (data && data.length > 0) {
                     data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                     const comments = data.slice(0, CONFIG.MAX_COMMENTS);
-                    
+
                     list.innerHTML = comments.map((c, index) => `
                         <div class="comment-item" style="animation-delay: ${index * 0.05}s">
                             <div class="comment-header">
@@ -600,7 +1105,7 @@
                                     <div class="avatar">${getInitials(c.name)}</div>
                                     ${escapeHTML(c.name)}
                                     ${c.department && c.department !== 'Not specified' ? 
-                                        `<span style="font-weight:normal;color:#718096;font-size:0.8rem;">
+                                        `<span style="font-weight:normal;color:#718096;font-size:0.75rem;">
                                             <i class="fa-regular fa-building"></i> ${escapeHTML(c.department)}
                                         </span>` : ''}
                                 </div>
@@ -616,7 +1121,7 @@
                         <div class="empty-state">
                             <i class="fa-regular fa-comment"></i>
                             <p>No notes submitted yet.</p>
-                            <p style="font-size:0.8rem;color:#a0aec0;">Be the first to share your observations!</p>
+                            <p style="font-size:0.75rem;color:#a0aec0;">Be the first to share your observations!</p>
                         </div>
                     `;
                 }
