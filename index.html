@@ -223,52 +223,20 @@
             color: var(--danger);
         }
 
-        /* Fishbone Grid */
-        .fishbone-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px 20px;
+        /* Fishbone Image */
+        .fishbone-image-container {
+            width: 100%;
+            border-radius: 6px;
+            overflow: hidden;
+            background: white;
             margin-top: 4px;
         }
 
-        @media (max-width: 500px) {
-            .fishbone-grid {
-                grid-template-columns: 1fr;
-                gap: 4px;
-            }
+        .fishbone-image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
-
-        .fishbone-category {
-            font-size: 0.8rem;
-            padding: 2px 0;
-        }
-
-        .fishbone-category .cat-label {
-            font-weight: bold;
-            color: var(--primary);
-            font-size: 0.8rem;
-        }
-
-        .fishbone-category .cat-items {
-            color: var(--dark);
-            font-size: 0.78rem;
-            padding-left: 4px;
-        }
-
-        .fishbone-category .cat-items .item {
-            display: inline-block;
-            background: white;
-            padding: 1px 8px;
-            border-radius: 10px;
-            margin: 1px 2px;
-            font-size: 0.7rem;
-            border: 1px solid var(--border);
-        }
-
-        .fishbone-category .cat-items .item.red { border-color: #fc8181; color: #9b2c2c; }
-        .fishbone-category .cat-items .item.orange { border-color: #f6ad55; color: #9c6c1c; }
-        .fishbone-category .cat-items .item.blue { border-color: #63b3ed; color: #1a4a7a; }
-        .fishbone-category .cat-items .item.green { border-color: #68d391; color: #22543d; }
 
         /* Stats Cards */
         .stats-grid {
@@ -794,7 +762,7 @@
                     </ul>
                 </div>
 
-                <!-- Root Causes - PINDAH KE KIRI -->
+                <!-- Root Causes -->
                 <div class="card">
                     <h2><i class="fa-solid fa-tree"></i> Root Causes</h2>
                     <ul class="point-list">
@@ -901,56 +869,14 @@
                     </div>
                 </div>
 
-                <!-- Fishbone Diagram -->
+                <!-- Fishbone Diagram - IMAGE -->
                 <div class="method-box fishbone">
                     <div class="method-title">
                         <i class="fa-solid fa-diagram-project" style="color:var(--success);"></i> Fishbone Diagram
                         <span style="font-size:0.65rem;background:var(--success);color:white;padding:1px 10px;border-radius:10px;margin-left:auto;">6 Categories</span>
                     </div>
-                    <div class="fishbone-grid">
-                        <div class="fishbone-category">
-                            <span class="cat-label">👤 Persons</span>
-                            <div class="cat-items">
-                                <span class="item red">Limited Supervision</span>
-                                <span class="item orange">Fatigue</span>
-                                <span class="item blue">No Refresher Training</span>
-                            </div>
-                        </div>
-                        <div class="fishbone-category">
-                            <span class="cat-label">⚙️ Machines</span>
-                            <div class="cat-items">
-                                <span class="item red">Damaged Pulley</span>
-                                <span class="item orange">Failed ESD</span>
-                                <span class="item blue">No Monitoring Sensors</span>
-                            </div>
-                        </div>
-                        <div class="fishbone-category">
-                            <span class="cat-label">📋 Methods</span>
-                            <div class="cat-items">
-                                <span class="item red">No SOP</span>
-                                <span class="item orange">No Pre-Startup Check</span>
-                                <span class="item blue">No Predictive Maint.</span>
-                            </div>
-                        </div>
-                        <div class="fishbone-category">
-                            <span class="cat-label">📊 Measurement</span>
-                            <div class="cat-items">
-                                <span class="item red">Heat Sensor Failed</span>
-                                <span class="item orange">No Early Warning</span>
-                            </div>
-                        </div>
-                        <div class="fishbone-category">
-                            <span class="cat-label">🧱 Material</span>
-                            <div class="cat-items">
-                                <span class="item green">No Data</span>
-                            </div>
-                        </div>
-                        <div class="fishbone-category">
-                            <span class="cat-label">🌍 Environment</span>
-                            <div class="cat-items">
-                                <span class="item green">No Significant Factor</span>
-                            </div>
-                        </div>
+                    <div class="fishbone-image-container">
+                        <img src="image/fishbone.png" alt="Fishbone Diagram - Root Cause Analysis">
                     </div>
                 </div>
             </div>
